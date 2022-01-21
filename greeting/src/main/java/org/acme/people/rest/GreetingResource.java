@@ -8,6 +8,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.acme.people.service.GreetingService;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +24,7 @@ public class GreetingResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
-        return "hello";
+        return message + " " + name.orElse("world") + suffix;
     }
 
     @GET
@@ -31,5 +33,14 @@ public class GreetingResource {
     public String greeting(@PathParam("name") String name) {
         return service.greeting(name);
     }
+
+    @ConfigProperty(name = "greeting.message")
+    String message;
+
+    @ConfigProperty(name = "greeting.suffix", defaultValue = "!")
+    String suffix;
+
+    @ConfigProperty(name = "greeting.name")
+    Optional<String> name;
 
 }
